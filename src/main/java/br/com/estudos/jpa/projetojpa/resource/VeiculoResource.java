@@ -1,8 +1,18 @@
 package br.com.estudos.jpa.projetojpa.resource;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +42,8 @@ public class VeiculoResource {
 	}
 
 	@PostMapping
-	private Veiculo adcionar(@RequestBody @Valid Veiculo veiculo) {
+	private Veiculo adcionar(@RequestBody @Valid Veiculo veiculo) throws IOException {
+		recuperarImagem(veiculo);
 		return veiculos.save(veiculo);
 	}
 
@@ -43,11 +54,13 @@ public class VeiculoResource {
 
 		if (optVeiculo.isPresent()) {
 			veiculo = optVeiculo.get();
+			System.out.println(veiculo.getDescricao());
+			System.out.println(veiculo.getEspecificacoes());
 		}
 
 		if (veiculo == null) {
 			return ResponseEntity.notFound().build();
-		}
+		}		
 
 		return ResponseEntity.ok(veiculo);
 
@@ -56,6 +69,13 @@ public class VeiculoResource {
 	@GetMapping("/{fabricante}/{id}")
 	public List<Veiculo> buscarPorFabricante(@PathVariable String fabricante) {
 		return veiculos.findByFabricante(fabricante);
+	}
+	
+	public Veiculo recuperarImagem(Veiculo v) throws IOException {
+		Path path = FileSystems.getDefault().getPath("src\\main\\resources\\static\\images\\corola.png");
+		byte[] foto = Files.readAllBytes(path);
+		v.setFoto(foto);
+		return v;		
 	}
 
 }

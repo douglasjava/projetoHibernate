@@ -1,33 +1,45 @@
 package br.com.estudos.jpa.projetojpa.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "tab_veiculo")
 public class Veiculo {
 
-	private Long codigo;
+	private Long id;
 	private String fabricante;
 	private String modelo;
 	private Integer anoFabricacao;
 	private Integer anoModelo;
 	private BigDecimal valor;
+	private TipoCombustivel tipoCombustivel;
+	private LocalDateTime dataCadastro;
+	private String especificacoes;
+	private byte[] foto;
+
+	@SuppressWarnings("unused")
+	private String descricao;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Long getCodigo() {
-		return codigo;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	public Long getId() {
+		return id;
 	}
 
-	public void setCodigo(Long codigo) {
-		this.codigo = codigo;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	@Column(length = 60, nullable = false)
@@ -75,11 +87,58 @@ public class Veiculo {
 		this.valor = valor;
 	}
 
+	@Enumerated(EnumType.STRING)
+	@Column(name = "tipo_combustivel", nullable = false)
+	public TipoCombustivel getTipoCombustivel() {
+		return tipoCombustivel;
+	}
+
+	public void setTipoCombustivel(TipoCombustivel tipoCombustivel) {
+		this.tipoCombustivel = tipoCombustivel;
+	}
+
+	@Column(name = "data_cadastro", nullable = false)
+	public LocalDateTime getDataCadastro() {
+		return dataCadastro;
+	}
+
+	public void setDataCadastro(LocalDateTime dataCadastro) {
+		this.dataCadastro = dataCadastro;
+	}
+
+	@Lob
+	public String getEspecificacoes() {
+		return especificacoes;
+	}
+
+	public void setEspecificacoes(String especificacoes) {
+		this.especificacoes = especificacoes;
+	}
+
+	@Lob
+	public byte[] getFoto() {
+		return foto;
+	}
+
+	public void setFoto(byte[] foto) {
+		this.foto = foto;
+	}
+
+	@Transient
+	public String getDescricao() {
+		return this.getFabricante() + " " + this.getModelo() + " " + this.getAnoFabricacao() + "/" + this.getAnoModelo()
+				+ " por apenas " + this.getValor();
+	}
+
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
 
@@ -92,18 +151,18 @@ public class Veiculo {
 		if (getClass() != obj.getClass())
 			return false;
 		Veiculo other = (Veiculo) obj;
-		if (codigo == null) {
-			if (other.codigo != null)
+		if (id == null) {
+			if (other.id != null)
 				return false;
-		} else if (!codigo.equals(other.codigo))
+		} else if (!id.equals(other.id))
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "Veiculo [codigo=" + codigo + ", fabricante=" + fabricante + ", modelo=" + modelo + ", anoFabricacao="
-				+ anoFabricacao + ", anoModelo=" + anoModelo + ", valor=" + valor + "]";
+		return "Veiculo [fabricante=" + fabricante + ", modelo=" + modelo + ", anoFabricacao=" + anoFabricacao
+				+ ", anoModelo=" + anoModelo + ", valor=" + valor + "]";
 	}
 
 }
