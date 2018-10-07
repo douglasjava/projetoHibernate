@@ -3,6 +3,7 @@ package br.com.estudos.jpa.projetojpa.model;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -10,7 +11,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -28,6 +31,7 @@ public class Veiculo {
 	private LocalDateTime dataCadastro;
 	private String especificacoes;
 	private byte[] foto;
+	private Proprietario proprietario;
 
 	@SuppressWarnings("unused")
 	private String descricao;
@@ -122,6 +126,16 @@ public class Veiculo {
 
 	public void setFoto(byte[] foto) {
 		this.foto = foto;
+	}
+
+	@OneToOne(cascade = CascadeType.ALL, optional = false)
+	@JoinColumn(name = "cod_proprietario")
+	public Proprietario getProprietario() {
+		return proprietario;
+	}
+
+	public void setProprietario(Proprietario proprietario) {
+		this.proprietario = proprietario;
 	}
 
 	@Transient
